@@ -42,6 +42,11 @@ sudo apt update -y
 sudo apt install openjdk-17-jdk openjdk-17-jre -y
 java -version
 
+#Install NPM
+sudo apt update -y
+sudo apt install npm -y
+npm -v
+
 # Install Jenkins
 # REF: https://www.jenkins.io/doc/book/installing/linux/#debianubuntu
 
