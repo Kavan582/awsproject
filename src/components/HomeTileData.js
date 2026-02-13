@@ -1,7 +1,7 @@
 const abc = [
   {
     id: 0,
-    Title: "Avatar",
+    Title: "Avatarssssss",
     Year: "2009",
     rated: "PG-13",
     released: "18 Dec 2009",
@@ -267,3 +267,4 @@ const abc = [
 ];
 
 export default abc;
+

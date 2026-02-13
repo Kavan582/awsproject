@@ -1,20 +1,19 @@
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "19.15.1"
+  version = "~> 20.0"
 
-  cluster_name                   = local.name
-  cluster_endpoint_public_access = true
+  cluster_name    = local.name
+  cluster_version = "1.32" 
+  create_node_security_group = false
+  create_cluster_security_group = false
+ 
 
   cluster_addons = {
-    coredns = {
-      most_recent = true
-    }
-    kube-proxy = {
-      most_recent = true
-    }
-    vpc-cni = {
-      most_recent = true
-    }
+    coredns                = {}
+    eks-pod-identity-agent = {}
+    kube-proxy             = {}
+    vpc-cni                = {}
+    metrics-server = {}
   }
 
   vpc_id                   = module.vpc.vpc_id

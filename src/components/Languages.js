@@ -8,7 +8,7 @@ const abc = [
   { id: 6, name: "Marathi" },
   { id: 7, name: "Punjabi" },
   { id: 8, name: "Gujarati" },
-  { id: 9, name: "Bengali" },
 ];
 
 export default abc;
+
