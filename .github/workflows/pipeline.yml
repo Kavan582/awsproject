@@ -1,35 +1,35 @@
 name: CI/CD Pipeline
 
 on:
-  workflow_dispatch:   # manual trigger
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    # 📥 Checkout
     - name: Checkout
       uses: actions/checkout@v4
 
-    # 🔐 Trivy Scan (Filesystem)
-    - name: Trivy Scan (Filesystem)
-      uses: aquasecurity/trivy-action@v0.28.0
-      with:
-        scan-type: fs
-        scan-ref: .
+    # 🛡 Install Trivy manually (stable)
+    - name: Install Trivy
+      run: |
+        sudo apt-get update
+        sudo apt-get install wget -y
+        wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.50.1_Linux-64bit.deb
+        sudo dpkg -i trivy_0.50.1_Linux-64bit.deb
+
+    # 🔐 Trivy Scan (filesystem)
+    - name: Trivy Scan FS
+      run: trivy fs .
 
     # 🐳 Build Docker Image
     - name: Build Docker Image
       run: docker build -t suriya396/amazon:${{ github.sha }} .
 
-    # 🛡 Trivy Scan (Image)
-    - name: Trivy Scan (Image)
-      uses: aquasecurity/trivy-action@v0.28.0
-      with:
-        image-ref: suriya396/amazon:${{ github.sha }}
-        severity: CRITICAL
-        exit-code: 1
+    # 🛡 Trivy Scan (image)
+    - name: Trivy Scan Image
+      run: trivy image --severity CRITICAL suriya396/amazon:${{ github.sha }}
 
     # 🔑 Docker Login
     - name: Login DockerHub
