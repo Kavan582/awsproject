@@ -1,19 +1,20 @@
 name: CI/CD Pipeline
 
 on:
-  workflow_dispatch:   # 🔥 manual trigger only (as you wanted)
+  workflow_dispatch:   # manual trigger
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
+    # 📥 Checkout
     - name: Checkout
       uses: actions/checkout@v4
 
-    # 🔐 Trivy Scan (filesystem)
+    # 🔐 Trivy Scan (Filesystem)
     - name: Trivy Scan (Filesystem)
-      uses: aquasecurity/trivy-action@0.20.0
+      uses: aquasecurity/trivy-action@v0.28.0
       with:
         scan-type: fs
         scan-ref: .
@@ -24,7 +25,7 @@ jobs:
 
     # 🛡 Trivy Scan (Image)
     - name: Trivy Scan (Image)
-      uses: aquasecurity/trivy-action@0.20.0
+      uses: aquasecurity/trivy-action@v0.28.0
       with:
         image-ref: suriya396/amazon:${{ github.sha }}
         severity: CRITICAL
@@ -60,4 +61,5 @@ jobs:
       run: |
         helm upgrade --install amazon ./amazon \
         --set image.repository=suriya396/amazon \
-        --set image.tag=${{ github.sha }}
+        --set image.tag=${{ github.sha }} \
+        --set image.pullPolicy=Always
