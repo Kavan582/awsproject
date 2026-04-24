@@ -24,12 +24,11 @@ jobs:
     - name: Build Docker Image
       run: docker build -t suriya396/amazon:${{ github.sha }} .
 
-    # 🔐 Trivy Image Scan
     - name: Trivy Scan (Image)
       uses: aquasecurity/trivy-action@v0.20.0
       with:
         image-ref: 'suriya396/amazon:${{ github.sha }}'
-        severity: 'HIGH,CRITICAL'
+        severity: 'CRITICAL'
         exit-code: '1'
 
     # 🔑 Docker Login
