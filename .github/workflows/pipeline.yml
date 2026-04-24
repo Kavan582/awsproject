@@ -8,29 +8,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 📥 Checkout
     - name: Checkout
       uses: actions/checkout@v4
 
-    # 🛡 Install Trivy (binary - stable)
+    # 🔥 Install Trivy (OFFICIAL SCRIPT - NEVER BREAKS)
     - name: Install Trivy
       run: |
         sudo apt-get update
-        sudo apt-get install -y wget
-        wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_$(uname -s)_64bit.tar.gz
-        tar -xzf trivy_$(uname -s)_64bit.tar.gz
-        sudo mv trivy /usr/local/bin/
+        sudo apt-get install -y curl
+        curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sudo sh -s -- -b /usr/local/bin
         trivy --version
 
-    # 🔐 Trivy Scan (filesystem)
+    # 🔐 Trivy Scan FS
     - name: Trivy Scan FS
       run: trivy fs .
 
-    # 🐳 Build Docker Image
+    # 🐳 Build Image
     - name: Build Docker Image
       run: docker build -t suriya396/amazon:${{ github.sha }} .
 
-    # 🛡 Trivy Scan (image)
+    # 🛡 Trivy Scan Image
     - name: Trivy Scan Image
       run: trivy image --severity CRITICAL suriya396/amazon:${{ github.sha }}
 
@@ -41,7 +38,7 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    # 🚀 Push Docker Image
+    # 🚀 Push Image
     - name: Push Docker Image
       run: docker push suriya396/amazon:${{ github.sha }}
 
@@ -53,13 +50,13 @@ jobs:
     - name: Setup Helm
       uses: azure/setup-helm@v4
 
-    # 🔑 Configure kubeconfig
+    # 🔑 Kubeconfig
     - name: Set kubeconfig
       run: |
         mkdir -p $HOME/.kube
         echo "${{ secrets.KUBE_CONFIG }}" > $HOME/.kube/config
 
-    # 🚀 Deploy using Helm
+    # 🚀 Deploy
     - name: Deploy to Kubernetes
       run: |
         helm upgrade --install amazon ./amazon \
